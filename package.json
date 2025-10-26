@@ -2,10 +2,6 @@
   "name": "portofolio-pkl-ledy",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=18.17.0",
-    "npm": ">=9.0.0"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -13,25 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "^15.0.0",
     "@supabase/supabase-js": "^2.45.0",
-    "autoprefixer": "^10.4.21",
-    "framer-motion": "^11.11.0",
-    "lucide-react": "^0.460.0",
-    "next": "15.0.3",
     "next-auth": "^4.24.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "lucide-react": "^0.460.0",
+    "framer-motion": "^11.11.0",
     "react-hook-form": "^7.53.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "typescript": "^5.6.0",
     "@types/node": "^22.7.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^15.0.0",
-    "postcss": "^8.5.6",
+    "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.6.0"
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0"
   }
 }
