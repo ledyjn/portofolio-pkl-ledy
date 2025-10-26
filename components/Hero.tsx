@@ -72,13 +72,13 @@ export default function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center justify-center text-center">
           <span className="text-sm text-accent-gray mb-2">Scroll</span>
-          <ArrowDown className="w-5 h-5 text-accent-gray" />
+          <ArrowDown className="w-5 h-5 text-accent-gray mx-auto" />
         </div>
       </motion.div>
     </section>
