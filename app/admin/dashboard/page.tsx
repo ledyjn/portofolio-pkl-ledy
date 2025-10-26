@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [skillCount, setSkillCount] = useState(0);
   const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
 
   useEffect(() => {
     checkAuth();
@@ -50,15 +51,17 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [portfolioRes, skillRes, recentPortfolios, recentSkills] = await Promise.all([
+      const [portfolioRes, skillRes, recentPortfolios, recentSkills, profileRes] = await Promise.all([
         supabase.from('projects').select('id', { count: 'exact', head: true }),
         supabase.from('skills').select('id', { count: 'exact', head: true }),
         supabase.from('projects').select('title, created_at').order('created_at', { ascending: false }).limit(3),
-        supabase.from('skills').select('name, created_at').order('created_at', { ascending: false }).limit(3)
+        supabase.from('skills').select('name, created_at').order('created_at', { ascending: false }).limit(3),
+        supabase.from('profile').select('*').limit(1).single()
       ]);
 
       setPortfolioCount(portfolioRes.count || 0);
       setSkillCount(skillRes.count || 0);
+      setProfileData(profileRes.data || null);
 
       // Combine and sort activities
       const activities: Activity[] = [];
@@ -289,14 +292,14 @@ export default function AdminDashboard() {
                 <Mail className="w-4 h-4 text-accent-gray" />
                 <div className="flex-1">
                   <p className="text-xs text-accent-gray">Email</p>
-                  <p className="text-sm font-medium text-primary">your.email@example.com</p>
+                  <p className="text-sm font-medium text-primary">{profileData?.email || 'Belum diisi'}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-50">
                 <GlobeIcon className="w-4 h-4 text-accent-gray" />
                 <div className="flex-1">
                   <p className="text-xs text-accent-gray">Website</p>
-                  <p className="text-sm font-medium text-primary">portfolio-pkl.vercel.app</p>
+                  <p className="text-sm font-medium text-primary">{profileData?.website || 'Belum diisi'}</p>
                 </div>
               </div>
               <div className="pt-3 border-t border-gray-200">
