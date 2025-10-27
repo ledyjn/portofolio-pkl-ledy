@@ -5,7 +5,7 @@ import { ArrowDown } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-light">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Animated Smoke Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="smoke-container">
@@ -31,13 +31,13 @@ export default function Hero() {
             transition={{ delay: 0.2 }}
             className="inline-block"
           >
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-6">
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-medium text-white mb-6">
               ✨ XII RPL A • Portfolio Magang
             </span>
           </motion.div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
             Ledy Jentri{' '}
             <span className="inline-block">
               <span className="relative">
@@ -50,9 +50,9 @@ export default function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base md:text-lg text-accent-gray mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
             Siswa XII RPL A yang menampilkan hasil pembelajaran selama{' '}
-            <span className="font-semibold text-primary">4 bulan program PKL</span>
+            <span className="font-semibold text-white">4 bulan program PKL</span>
           </p>
 
           {/* CTA Buttons */}
@@ -70,7 +70,7 @@ export default function Hero() {
             </motion.a>
             <motion.a
               href="#contact"
-              className="btn-outline inline-flex items-center space-x-2"
+              className="px-8 py-4 rounded-full font-semibold text-white border-2 border-white transition-all duration-300 hover:bg-white hover:text-black inline-flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -87,8 +87,8 @@ export default function Hero() {
         transition={{ duration: 2, repeat: Infinity }}
       >
         <div className="flex flex-col items-center justify-center">
-          <span className="text-sm text-accent-gray mb-2">Scroll</span>
-          <ArrowDown className="w-5 h-5 text-accent-gray" />
+          <span className="text-sm text-gray-300 mb-2">Scroll</span>
+          <ArrowDown className="w-5 h-5 text-gray-300" />
         </div>
       </motion.div>
     </section>
