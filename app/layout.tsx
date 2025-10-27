@@ -18,8 +18,15 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={inter.className}>
-        <ClickSpark />
-        {children}
+        <ClickSpark
+          sparkColor="#F97316"
+          sparkSize={10}
+          sparkRadius={20}
+          sparkCount={8}
+          duration={500}
+        >
+          {children}
+        </ClickSpark>
       </body>
     </html>
   );
