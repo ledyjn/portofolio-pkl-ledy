@@ -8,6 +8,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Ledy Jentri Meiza - XII RPL A",
   description: "Projek Praktek Kerja Lapangan - Ledy Jentri Meiza, Siswa XII RPL A",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({

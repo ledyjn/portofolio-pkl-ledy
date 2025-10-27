@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-size: 14px;
+  }
+  
   body {
     @apply bg-light text-primary;
   }
@@ -14,6 +18,10 @@
   h1, h2, h3 {
     @apply font-bold;
   }
+  
+  .container {
+    max-width: 1400px;
+  }
 }
 
 @layer components {
@@ -23,7 +31,7 @@
   }
   
   .btn-primary {
-    @apply relative px-8 py-4 rounded-full font-semibold text-white overflow-hidden;
+    @apply relative px-6 py-3 rounded-full font-semibold text-white overflow-hidden;
     @apply transition-all duration-300 hover:scale-105;
     background: #000000;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
@@ -35,7 +43,7 @@
   }
   
   .btn-outline {
-    @apply px-8 py-4 rounded-full font-semibold text-primary border-2 border-primary;
+    @apply px-6 py-3 rounded-full font-semibold text-primary border-2 border-primary;
     @apply transition-all duration-300 hover:bg-primary hover:text-white;
   }
   
