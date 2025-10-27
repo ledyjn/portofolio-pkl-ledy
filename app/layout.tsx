@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="id">
       <body className={inter.className}>
         <ClickSpark
-          sparkColor="#F97316"
+          sparkColor="#000000"
           sparkSize={10}
           sparkRadius={20}
           sparkCount={8}

@@ -21,14 +21,14 @@ interface Spark {
 }
 
 const ClickSpark: React.FC<ClickSparkProps> = ({
-  sparkColor = '#F97316',
+  sparkColor = '#000000',
   sparkSize = 10,
   sparkRadius = 20,
   sparkCount = 8,
   duration = 500,
   easing = 'ease-out',
   extraScale = 1.0,
-  children
+  children,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
@@ -146,7 +146,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
       x,
       y,
       angle: (2 * Math.PI * i) / sparkCount,
-      startTime: now
+      startTime: now,
     }));
 
     sparksRef.current.push(...newSparks);
