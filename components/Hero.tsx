@@ -6,6 +6,16 @@ import { ArrowDown } from 'lucide-react';
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-light">
+      {/* Animated Smoke Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="smoke-container">
+          <div className="smoke smoke-1"></div>
+          <div className="smoke smoke-2"></div>
+          <div className="smoke smoke-3"></div>
+          <div className="smoke smoke-4"></div>
+        </div>
+      </div>
+      
       {/* Content */}
       <div className="container mx-auto px-6 lg:px-12 relative z-10 py-20">
         <motion.div
