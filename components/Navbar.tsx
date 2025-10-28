@@ -12,12 +12,17 @@ export default function Navbar() {
       <div className="px-4 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">L</span>
             </div>
             <div>
-              <span className="text-lg font-bold text-primary block leading-tight">Ledy Jentri</span>
+              <span className="text-lg font-bold text-primary block leading-tight">
+                Ledy Jentri
+              </span>
               <span className="text-xs text-accent-gray">XII RPL A</span>
             </div>
           </Link>
@@ -27,20 +32,38 @@ export default function Navbar() {
             <Link href="/" className="text-primary hover:opacity-60 transition-opacity font-medium">
               Home
             </Link>
-            <Link href="#about" className="text-primary hover:opacity-60 transition-opacity font-medium">
+            <Link
+              href="#about"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
               About
             </Link>
-            <Link href="#portfolio" className="text-primary hover:opacity-60 transition-opacity font-medium">
+            <Link
+              href="#portfolio"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
               Projek
             </Link>
-            <Link href="#skills" className="text-primary hover:opacity-60 transition-opacity font-medium">
+            <Link
+              href="#skills"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
               Skills
             </Link>
-            <Link href="#contact" className="text-primary hover:opacity-60 transition-opacity font-medium">
+            <Link
+              href="#gallery"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
+              Gallery
+            </Link>
+            <Link
+              href="#contact"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
               Contact
             </Link>
-            <Link 
-              href="/admin/login" 
+            <Link
+              href="/admin/login"
               className="px-6 py-2.5 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition-colors flex items-center space-x-2"
             >
               <LogIn className="w-4 h-4" />
@@ -53,7 +76,11 @@ export default function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            {isOpen ? <X className="w-6 h-6 text-primary" /> : <Menu className="w-6 h-6 text-primary" />}
+            {isOpen ? (
+              <X className="w-6 h-6 text-primary" />
+            ) : (
+              <Menu className="w-6 h-6 text-primary" />
+            )}
           </button>
         </div>
       </div>
@@ -62,43 +89,50 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-light border-t border-gray-200">
           <div className="px-4 py-6 space-y-4">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Home
             </Link>
-            <Link 
-              href="#about" 
+            <Link
+              href="#about"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
               About
             </Link>
-            <Link 
-              href="#portfolio" 
+            <Link
+              href="#portfolio"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Projek
             </Link>
-            <Link 
-              href="#skills" 
+            <Link
+              href="#skills"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Skills
             </Link>
-            <Link 
-              href="#contact" 
+            <Link
+              href="#gallery"
+              className="block py-2 hover:text-primary transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Gallery
+            </Link>
+            <Link
+              href="#contact"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Contact
             </Link>
-            <Link 
-              href="/admin/login" 
+            <Link
+              href="/admin/login"
               className="btn-primary inline-flex items-center space-x-2"
               onClick={() => setIsOpen(false)}
             >
