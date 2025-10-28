@@ -14,10 +14,10 @@ interface Skill {
 }
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
-  'code': Code2,
-  'database': Database,
-  'design': Palette,
-  'web': Globe,
+  code: Code2,
+  database: Database,
+  design: Palette,
+  web: Globe,
 };
 
 export default function SkillsSection() {
@@ -78,9 +78,7 @@ export default function SkillsSection() {
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
             Skills
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Yang Saya Kuasai
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Yang Saya Gunakan</h2>
           <p className="text-base text-accent-gray max-w-2xl mx-auto">
             Tools dan teknologi yang dipelajari selama magang
           </p>
@@ -91,7 +89,7 @@ export default function SkillsSection() {
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-light to-transparent z-10 pointer-events-none"></div>
           <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-light to-transparent z-10 pointer-events-none"></div>
-          
+
           {/* Scrolling Container */}
           <motion.div
             className="flex gap-4 py-2"
@@ -101,25 +99,24 @@ export default function SkillsSection() {
             transition={{
               x: {
                 repeat: Infinity,
-                repeatType: "loop",
+                repeatType: 'loop',
                 duration: 12,
-                ease: "linear",
+                ease: 'linear',
               },
             }}
           >
             {duplicatedSkills.map((skill, index) => {
               const IconComponent = iconMap[skill.icon || 'code'];
-              
+
               return (
-                <div
-                  key={`${skill.id}-${index}`}
-                  className="group flex-shrink-0"
-                >
+                <div key={`${skill.id}-${index}`} className="group flex-shrink-0">
                   <div className="card-hover rounded-xl px-5 py-3.5 bg-light-card border-2 border-gray-200 hover:border-primary transition-all flex items-center space-x-3 shadow-sm">
                     {IconComponent && (
                       <IconComponent className="w-6 h-6 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     )}
-                    <h4 className="font-semibold text-base text-primary whitespace-nowrap">{skill.name}</h4>
+                    <h4 className="font-semibold text-base text-primary whitespace-nowrap">
+                      {skill.name}
+                    </h4>
                   </div>
                 </div>
               );
