@@ -110,7 +110,7 @@ export default function Navbar() {
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Tempat PKL
+              Profile PKL
             </Link>
             <Link
               href="#portfolio"
