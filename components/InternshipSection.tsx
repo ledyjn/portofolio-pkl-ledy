@@ -1,7 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Building2, Users, Briefcase, MapPin, Calendar, Phone, Mail, Globe } from 'lucide-react';
+import Image from 'next/image';
+import { Users, Briefcase, MapPin, Calendar, Phone, Mail, Globe } from 'lucide-react';
 
 export default function InternshipSection() {
   return (
@@ -15,7 +16,7 @@ export default function InternshipSection() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-            Tempat PKL
+            Profile PKL
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Pengenalan <span className="text-primary">Perusahaan</span>
@@ -34,8 +35,14 @@ export default function InternshipSection() {
           >
             <div className="bg-light-card rounded-2xl border-2 border-gray-200 p-8 shadow-sm lg:h-[586px] overflow-y-auto">
               <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                  <span className="text-white font-bold text-xl">3PM</span>
+                <div className="w-16 h-16 rounded-xl overflow-hidden shadow-lg flex-shrink-0 relative bg-white">
+                  <Image
+                    src="/images/logo-3pm.png"
+                    alt="Logo 3PM Solution"
+                    width={64}
+                    height={64}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-primary">3PM Solution</h3>
@@ -44,39 +51,48 @@ export default function InternshipSection() {
               </div>
 
               <p className="text-accent-gray leading-relaxed text-sm mb-6">
-                Perusahaan teknologi yang didirikan pada tahun 2009 oleh Ricky Subiantoputra, S.Kom. 
-                Dengan pengalaman lebih dari satu dekade, 3PM Solution telah berkembang menjadi 
-                mitra terpercaya dalam pengembangan solusi digital. Awalnya berfokus pada pembuatan 
-                aplikasi berbasis desktop untuk berbagai keperluan bisnis, perusahaan ini terus 
+                Perusahaan teknologi yang didirikan pada tahun 2009 oleh Ricky Subiantoputra, S.Kom.
+                Dengan pengalaman lebih dari satu dekade, 3PM Solution telah berkembang menjadi
+                mitra terpercaya dalam pengembangan solusi digital. Awalnya berfokus pada pembuatan
+                aplikasi berbasis desktop untuk berbagai keperluan bisnis, perusahaan ini terus
                 berinovasi dan berkembang mengikuti perkembangan teknologi.
               </p>
               <p className="text-accent-gray leading-relaxed text-sm mb-6">
-                Melalui berbagai tantangan dan keberhasilan, 3PM Solution kini menjadi pilihan 
-                banyak perusahaan dalam mewujudkan transformasi digital mereka. Dengan tim profesional 
-                yang berpengalaman, perusahaan ini menyediakan layanan pengembangan aplikasi web dan 
-                mobile yang inovatif serta disesuaikan dengan kebutuhan klien.
+                Melalui berbagai tantangan dan keberhasilan, 3PM Solution kini menjadi pilihan
+                banyak perusahaan dalam mewujudkan transformasi digital mereka. Dengan tim
+                profesional yang berpengalaman, perusahaan ini menyediakan layanan pengembangan
+                aplikasi web dan mobile yang inovatif serta disesuaikan dengan kebutuhan klien.
               </p>
 
               <div className="space-y-3 pt-6 border-t border-gray-200">
                 <div className="flex items-center space-x-3 text-sm">
                   <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-accent-gray">Didirikan tahun <span className="font-semibold text-primary">2009</span></span>
+                  <span className="text-accent-gray">
+                    Didirikan tahun <span className="font-semibold text-primary">2009</span>
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
                   <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-accent-gray">Lokasi kantor di <span className="font-semibold text-primary">Indonesia</span></span>
+                  <span className="text-accent-gray">
+                    Lokasi kantor di <span className="font-semibold text-primary">Indonesia</span>
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
                   <Briefcase className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-accent-gray">Lebih dari <span className="font-semibold text-primary">5+ layanan</span> digital</span>
+                  <span className="text-accent-gray">
+                    Lebih dari <span className="font-semibold text-primary">5+ layanan</span>{' '}
+                    digital
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
                   <Users className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-accent-gray">Dipercaya oleh <span className="font-semibold text-primary">11+ mitra</span> perusahaan</span>
+                  <span className="text-accent-gray">
+                    Dipercaya oleh <span className="font-semibold text-primary">11+ mitra</span>{' '}
+                    perusahaan
+                  </span>
                 </div>
               </div>
             </div>
-
           </motion.div>
 
           <motion.div
@@ -88,13 +104,13 @@ export default function InternshipSection() {
           >
             <div className="bg-light-card rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm lg:h-[280px] flex flex-col">
               <div className="flex-1 relative bg-gradient-to-br from-gray-100 to-gray-200 min-h-[200px]">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center p-6">
-                    <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-gray-500">Foto Kantor 3PM Solution</p>
-                    <p className="text-xs text-gray-400 mt-1">Tambahkan foto kantor di sini</p>
-                  </div>
-                </div>
+                <Image
+                  src="/images/kantor-3pm.jpeg"
+                  alt="Kantor 3PM Solution"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
               <div className="p-4 bg-white">
                 <h4 className="font-semibold text-primary text-sm mb-1">Kantor 3PM Solution</h4>
@@ -111,7 +127,7 @@ export default function InternshipSection() {
                   </div>
                   <div>
                     <p className="text-xs text-accent-gray mb-1">WhatsApp</p>
-                    <p className="text-sm font-medium text-primary">0818388810</p>
+                    <p className="text-sm font-medium text-primary">+62-81-838-8010</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -120,7 +136,7 @@ export default function InternshipSection() {
                   </div>
                   <div>
                     <p className="text-xs text-accent-gray mb-1">Email</p>
-                    <p className="text-sm font-medium text-primary">hr@3pmsolution@gmail.com</p>
+                    <p className="text-sm font-medium text-primary">hrd3pmsolution@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -129,9 +145,9 @@ export default function InternshipSection() {
                   </div>
                   <div>
                     <p className="text-xs text-accent-gray mb-1">Website</p>
-                    <a 
-                      href="https://www.3pm-solution.com" 
-                      target="_blank" 
+                    <a
+                      href="https://www.3pm-solution.com/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-medium text-primary hover:underline"
                     >
@@ -145,9 +161,9 @@ export default function InternshipSection() {
                   </div>
                   <div>
                     <p className="text-xs text-accent-gray mb-1">Instagram</p>
-                    <a 
-                      href="https://instagram.com/3pmsolution" 
-                      target="_blank" 
+                    <a
+                      href="https://www.instagram.com/3pmsolution/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-medium text-primary hover:underline"
                     >

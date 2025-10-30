@@ -6,6 +6,7 @@ const galleryItems = [
   { image: '/gallery/lt1.jpeg', text: 'Lantai 1' },
   { image: '/gallery/lt1-pkl.jpeg', text: 'Area PKL' },
   { image: '/gallery/teras.jpeg', text: 'Teras Kantor' },
+  { image: '/gallery/parkir.jpeg', text: 'Area Parkir' },
 ];
 
 export default function GallerySection() {
