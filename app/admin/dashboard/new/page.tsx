@@ -3,15 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, Upload, X, Plus, FolderOpen } from 'lucide-react';
+import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function NewPortfolio() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploading, setUploading] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -32,42 +33,60 @@ export default function NewPortfolio() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setImageFiles(prev => [...prev, ...files]);
+      
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
-  const uploadImage = async (): Promise<string> => {
-    if (!imageFile) throw new Error('No file selected');
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `portfolio-images/${fileName}`;
+  const uploadMultipleImages = async (): Promise<string[]> => {
+    if (imageFiles.length === 0) return [];
 
-    const { error: uploadError } = await supabase.storage
-      .from('portofolios')
-      .upload(filePath, imageFile);
+    setUploading(true);
+    const uploadedUrls: string[] = [];
 
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
-      // Throw error dengan pesan yang lebih informatif
-      if (uploadError.message.includes('not found')) {
-        throw new Error('Storage bucket "portofolios" belum dibuat di Supabase. Silakan buat bucket terlebih dahulu di Supabase Dashboard → Storage → New Bucket dengan nama "portofolios" dan set sebagai Public.');
+    try {
+      for (const file of imageFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+        const filePath = `portfolio-images/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('portofolios')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          if (uploadError.message.includes('not found')) {
+            throw new Error('Storage bucket "portofolios" belum dibuat di Supabase.');
+          }
+          throw new Error(`Upload gagal: ${uploadError.message}`);
+        }
+
+        const { data } = supabase.storage
+          .from('portofolios')
+          .getPublicUrl(filePath);
+
+        uploadedUrls.push(data.publicUrl);
       }
-      throw new Error(`Upload gagal: ${uploadError.message}`);
+
+      return uploadedUrls;
+    } finally {
+      setUploading(false);
     }
-
-    const { data } = supabase.storage
-      .from('portofolios')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,17 +94,19 @@ export default function NewPortfolio() {
     setLoading(true);
 
     try {
-      let imageUrl = formData.image_url;
-
-      // Upload image if file selected
-      if (imageFile) {
+      // Upload images if any
+      let imageUrls: string[] = [];
+      if (imageFiles.length > 0) {
         try {
-          imageUrl = await uploadImage();
-        } catch (uploadError: any) {
-          // Jika upload gagal, hentikan proses dan tampilkan error
-          throw new Error(`Gagal upload gambar: ${uploadError.message}`);
+          imageUrls = await uploadMultipleImages();
+        } catch (uploadError) {
+          const errorMessage = uploadError instanceof Error ? uploadError.message : 'Upload gagal';
+          throw new Error(`Gagal upload gambar: ${errorMessage}`);
         }
       }
+
+      // Use first image as main thumbnail or use URL
+      const mainImage = imageUrls.length > 0 ? imageUrls[0] : formData.image_url;
 
       // Parse technologies from comma-separated string to array
       const techArray = formData.technologies
@@ -101,16 +122,18 @@ export default function NewPortfolio() {
             description: formData.description,
             detail: formData.detail,
             technologies: techArray,
-            image_url: imageUrl,
+            image_url: mainImage,
+            images: imageUrls.length > 0 ? imageUrls : null,
           }
         ]);
 
       if (error) throw error;
 
       alert('Portfolio berhasil ditambahkan!');
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      alert('Error: ' + error.message);
+      router.push('/admin/portfolio');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Terjadi kesalahan';
+      alert('Error: ' + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -134,7 +157,7 @@ export default function NewPortfolio() {
           </div>
           
           <Link 
-            href="/admin/dashboard"
+            href="/admin/portfolio"
             className="px-4 py-2 rounded-full bg-light-card border-2 border-gray-200 hover:border-primary transition-colors flex items-center space-x-2 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -214,56 +237,61 @@ export default function NewPortfolio() {
 
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-semibold mb-2 text-primary">
-                Gambar Portfolio
+              <label className="block text-sm font-semibold mb-4 text-primary">
+                Screenshots/Gambar Project *
               </label>
+              <p className="text-sm text-accent-gray mb-4">
+                Upload beberapa screenshot atau gambar dari project. Gambar pertama akan jadi thumbnail utama.
+              </p>
               
-              {imagePreview ? (
-                <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-4 border-2 border-gray-200">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImageFile(null);
-                      setImagePreview('');
-                    }}
-                    className="absolute top-3 right-3 p-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors shadow-lg"
-                  >
-                    <X className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-              ) : (
-                <label className="w-full h-64 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-primary hover:bg-gray-50 transition-all">
-                  <div className="p-4 bg-gray-100 rounded-full mb-3">
-                    <Upload className="w-8 h-8 text-primary" />
+              {/* Images Preview Grid */}
+              {imagePreviews.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-primary mb-2">Gambar Dipilih ({imagePreviews.length})</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative group aspect-video rounded-lg overflow-hidden border-2 border-blue-200">
+                        <Image
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+                          #{index + 1} {index === 0 && '(Thumbnail)'}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-4 h-4 text-white" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-primary font-medium text-sm">Klik untuk upload gambar</p>
-                  <p className="text-accent-gray text-xs mt-1">PNG, JPG, atau GIF (Max. 5MB)</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
+                </div>
               )}
 
-              {/* Or URL */}
-              <div className="mt-4">
-                <p className="text-sm text-accent-gray mb-2">Atau masukkan URL gambar:</p>
+              {/* Upload Button */}
+              <label className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary hover:bg-gray-50 transition-all">
+                <Upload className="w-10 h-10 text-accent-gray mb-2" />
+                <p className="text-primary font-medium text-sm">Klik untuk upload gambar</p>
+                <p className="text-xs text-accent-gray mt-1">Bisa pilih lebih dari 1 gambar (PNG, JPG, GIF)</p>
                 <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full px-4 py-3 rounded-xl bg-light border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
                 />
-              </div>
+              </label>
+
+              {uploading && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-600 font-medium">Mengupload gambar...</p>
+                </div>
+              )}
             </div>
 
             {/* Submit Button */}
@@ -276,7 +304,7 @@ export default function NewPortfolio() {
                 {loading ? 'Menyimpan...' : 'Simpan Portfolio'}
               </button>
               <Link
-                href="/admin/dashboard"
+                href="/admin/portfolio"
                 className="px-6 py-3 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors text-center font-semibold text-primary flex items-center justify-center"
               >
                 Batal

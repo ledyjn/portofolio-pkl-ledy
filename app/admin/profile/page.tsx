@@ -3,12 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
+import { LoadingPage } from '@/components/LoadingSpinner';
 import { 
   LogOut, 
   User,
   LayoutDashboard,
-  Save
+  Save,
+  Upload,
+  X
 } from 'lucide-react';
 
 interface Profile {
@@ -21,12 +25,16 @@ interface Profile {
   linkedin: string;
   instagram: string;
   website: string;
+  photo_url?: string;
 }
 
 export default function ProfileAdmin() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<Profile>({
     name: '',
     bio: '',
@@ -35,7 +43,8 @@ export default function ProfileAdmin() {
     github: '',
     linkedin: '',
     instagram: '',
-    website: ''
+    website: '',
+    photo_url: ''
   });
 
   useEffect(() => {
@@ -64,6 +73,9 @@ export default function ProfileAdmin() {
       
       if (data) {
         setFormData(data);
+        if (data.photo_url) {
+          setPhotoPreview(data.photo_url);
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -72,11 +84,70 @@ export default function ProfileAdmin() {
     }
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadPhoto = async (): Promise<string | null> => {
+    if (!photoFile) return formData.photo_url || null;
+
+    setUploading(true);
+    try {
+      const fileExt = photoFile.name.split('.').pop();
+      const fileName = `profile-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, photoFile, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setFormData({ ...formData, photo_url: '' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
+      // Upload photo first if there's a new file
+      let photoUrl = formData.photo_url;
+      if (photoFile) {
+        const uploadedUrl = await uploadPhoto();
+        if (uploadedUrl) {
+          photoUrl = uploadedUrl;
+        }
+      }
+
+      const dataToSave = { ...formData, photo_url: photoUrl };
       const { data: existingData } = await supabase
         .from('profile')
         .select('id')
@@ -86,7 +157,7 @@ export default function ProfileAdmin() {
         // Update existing profile
         const { error } = await supabase
           .from('profile')
-          .update(formData)
+          .update(dataToSave)
           .eq('id', existingData.id);
 
         if (error) throw error;
@@ -94,14 +165,23 @@ export default function ProfileAdmin() {
         // Insert new profile
         const { error } = await supabase
           .from('profile')
-          .insert([formData]);
+          .insert([dataToSave]);
 
         if (error) throw error;
       }
 
+      setFormData(dataToSave);
+      setPhotoFile(null);
+
       alert('Profile berhasil disimpan!');
-    } catch (error: any) {
-      alert('Error: ' + error.message);
+      
+      // Auto redirect ke dashboard setelah 500ms
+      setTimeout(() => {
+        router.push('/admin/dashboard');
+      }, 500);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Terjadi kesalahan';
+      alert('Error: ' + errorMessage);
     } finally {
       setSaving(false);
     }
@@ -113,11 +193,7 @@ export default function ProfileAdmin() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light">
-        <div className="text-2xl font-bold text-primary">Loading...</div>
-      </div>
-    );
+    return <LoadingPage text="Memuat profil..." />;
   }
 
   return (
@@ -158,6 +234,58 @@ export default function ProfileAdmin() {
         {/* Form */}
         <div className="bg-light-card rounded-2xl border-2 border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Photo Upload */}
+            <div>
+              <h2 className="text-xl font-bold text-primary mb-4">Foto Profil</h2>
+              <div className="flex flex-col md:flex-row gap-6 items-start">
+                {/* Photo Preview */}
+                <div className="relative w-48 h-48 rounded-xl border-2 border-gray-200 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center flex-shrink-0">
+                  {photoPreview ? (
+                    <Image 
+                      src={photoPreview} 
+                      alt="Preview" 
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <User className="w-16 h-16 text-gray-400" />
+                  )}
+                </div>
+                
+                {/* Upload Controls */}
+                <div className="flex-1 space-y-3">
+                  <p className="text-sm text-accent-gray">
+                    Upload foto profil Anda. Foto akan ditampilkan di section &quot;Tentang Saya&quot;.
+                  </p>
+                  <div className="flex gap-3">
+                    <label className="px-4 py-2.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors cursor-pointer flex items-center space-x-2 font-semibold">
+                      <Upload className="w-4 h-4" />
+                      <span>{photoFile ? 'Ganti Foto' : 'Upload Foto'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {photoPreview && (
+                      <button
+                        type="button"
+                        onClick={handleRemovePhoto}
+                        className="px-4 py-2.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors flex items-center space-x-2 font-semibold border-2 border-red-200"
+                      >
+                        <X className="w-4 h-4" />
+                        <span>Hapus</span>
+                      </button>
+                    )}
+                  </div>
+                  {uploading && (
+                    <p className="text-sm text-primary font-medium">Mengupload foto...</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Personal Info */}
             <div>
               <h2 className="text-xl font-bold text-primary mb-4">Informasi Pribadi</h2>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { LoadingPage } from '@/components/LoadingSpinner';
 import { 
   LogOut, 
   Code2, 
@@ -111,11 +112,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light">
-        <div className="text-2xl font-bold text-primary">Loading...</div>
-      </div>
-    );
+    return <LoadingPage text="Memuat dashboard..." />;
   }
 
   return (

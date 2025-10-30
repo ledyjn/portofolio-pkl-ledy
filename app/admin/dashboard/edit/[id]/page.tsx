@@ -6,14 +6,17 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Upload, X, Edit2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { LoadingPage } from '@/components/LoadingSpinner';
 
 export default function EditPortfolio({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploading, setUploading] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -53,54 +56,83 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
           technologies: data.technologies?.join(', ') || '',
           image_url: data.image_url || '',
         });
-        if (data.image_url) {
-          setImagePreview(data.image_url);
+        // Load existing images from database and filter out empty strings
+        if (data.images && data.images.length > 0) {
+          const validImages = data.images.filter((url: string) => url && url.trim() !== '');
+          setExistingImages(validImages);
+        } else if (data.image_url && data.image_url.trim() !== '') {
+          setExistingImages([data.image_url]);
         }
       }
-    } catch (error: any) {
-      alert('Error loading portfolio: ' + error.message);
-      router.push('/admin/dashboard');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Terjadi kesalahan';
+      alert('Error loading portfolio: ' + errorMessage);
+      router.push('/admin/portfolio');
     } finally {
       setFetching(false);
     }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setImageFiles(prev => [...prev, ...files]);
+      
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
-  const uploadImage = async (): Promise<string> => {
-    if (!imageFile) throw new Error('No file selected');
+  const removeNewImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `portfolio-images/${fileName}`;
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
 
-    const { error: uploadError } = await supabase.storage
-      .from('portofolios')
-      .upload(filePath, imageFile);
 
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
-      if (uploadError.message.includes('not found')) {
-        throw new Error('Storage bucket "portofolios" belum dibuat di Supabase. Silakan buat bucket terlebih dahulu di Supabase Dashboard → Storage → New Bucket dengan nama "portofolios" dan set sebagai Public.');
+  const uploadMultipleImages = async (): Promise<string[]> => {
+    if (imageFiles.length === 0) return [];
+
+    setUploading(true);
+    const uploadedUrls: string[] = [];
+
+    try {
+      for (const file of imageFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+        const filePath = `portfolio-images/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('portofolios')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          if (uploadError.message.includes('not found')) {
+            throw new Error('Storage bucket "portofolios" belum dibuat di Supabase.');
+          }
+          throw new Error(`Upload gagal: ${uploadError.message}`);
+        }
+
+        const { data } = supabase.storage
+          .from('portofolios')
+          .getPublicUrl(filePath);
+
+        uploadedUrls.push(data.publicUrl);
       }
-      throw new Error(`Upload gagal: ${uploadError.message}`);
+
+      return uploadedUrls;
+    } finally {
+      setUploading(false);
     }
-
-    const { data } = supabase.storage
-      .from('portofolios')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -108,16 +140,22 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
     setLoading(true);
 
     try {
-      let imageUrl = formData.image_url;
-
-      // Upload new image if file selected
-      if (imageFile) {
+      // Upload new images if any
+      let newImageUrls: string[] = [];
+      if (imageFiles.length > 0) {
         try {
-          imageUrl = await uploadImage();
-        } catch (uploadError: any) {
-          throw new Error(`Gagal upload gambar: ${uploadError.message}`);
+          newImageUrls = await uploadMultipleImages();
+        } catch (uploadError) {
+          const errorMessage = uploadError instanceof Error ? uploadError.message : 'Upload gagal';
+          throw new Error(`Gagal upload gambar: ${errorMessage}`);
         }
       }
+
+      // Combine existing and new images, filter out empty strings
+      const allImages = [...existingImages, ...newImageUrls].filter(url => url && url.trim() !== '');
+      
+      // Use first image as main thumbnail
+      const mainImage = allImages.length > 0 ? allImages[0] : (formData.image_url && formData.image_url.trim() !== '' ? formData.image_url : '');
 
       // Parse technologies
       const techArray = formData.technologies
@@ -132,7 +170,8 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
           description: formData.description,
           detail: formData.detail,
           technologies: techArray,
-          image_url: imageUrl,
+          image_url: mainImage,
+          images: allImages,
           updated_at: new Date().toISOString(),
         })
         .eq('id', resolvedParams.id);
@@ -140,20 +179,17 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
       if (error) throw error;
 
       alert('Portfolio berhasil diupdate!');
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      alert('Error: ' + error.message);
+      router.push('/admin/portfolio');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Terjadi kesalahan';
+      alert('Error: ' + errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   if (fetching) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light">
-        <div className="text-2xl font-bold text-primary">Loading...</div>
-      </div>
-    );
+    return <LoadingPage text="Memuat data portfolio..." />;
   }
 
   return (
@@ -174,7 +210,7 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
           </div>
           
           <Link 
-            href="/admin/dashboard"
+            href="/admin/portfolio"
             className="px-4 py-2 rounded-full bg-light-card border-2 border-gray-200 hover:border-primary transition-colors flex items-center space-x-2 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -244,53 +280,90 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-primary">
-                Gambar Portfolio
+              <label className="block text-sm font-semibold mb-4 text-primary">
+                Screenshots/Gambar Project *
               </label>
+              <p className="text-sm text-accent-gray mb-4">
+                Upload beberapa screenshot atau gambar dari project. Gambar pertama akan jadi thumbnail utama.
+              </p>
               
-              {imagePreview ? (
-                <div className="relative w-full h-64 rounded-lg overflow-hidden mb-4">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImageFile(null);
-                      setImagePreview('');
-                      setFormData({ ...formData, image_url: '' });
-                    }}
-                    className="absolute top-2 right-2 p-2 bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+              {/* Existing Images Grid */}
+              {existingImages.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-primary mb-2">Gambar Tersimpan ({existingImages.length})</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {existingImages.filter(url => url && url.trim() !== '').map((url, index) => (
+                      <div key={index} className="relative group aspect-video rounded-lg overflow-hidden border-2 border-gray-200">
+                        <Image
+                          src={url}
+                          alt={`Image ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+                          #{index + 1} {index === 0 && '(Thumbnail)'}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeExistingImage(index)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-4 h-4 text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <label className="w-full h-64 flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-primary transition-colors">
-                  <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                  <p className="text-gray-400 text-sm">Klik untuk upload gambar baru</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
               )}
 
-              <div className="mt-4">
-                <p className="text-sm text-gray-400 mb-2">Atau masukkan URL gambar:</p>
+              {/* New Images Preview */}
+              {imagePreviews.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-primary mb-2">Gambar Baru ({imagePreviews.length})</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative group aspect-video rounded-lg overflow-hidden border-2 border-blue-200">
+                        <Image
+                          src={preview}
+                          alt={`New ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium">
+                          Baru
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeNewImage(index)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-4 h-4 text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload Button */}
+              <label className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary hover:bg-gray-50 transition-all">
+                <Upload className="w-10 h-10 text-accent-gray mb-2" />
+                <p className="text-primary font-medium text-sm">Klik untuk upload gambar</p>
+                <p className="text-xs text-accent-gray mt-1">Bisa pilih lebih dari 1 gambar</p>
                 <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full px-4 py-3 rounded-xl bg-light border-2 border-gray-200 focus:outline-none focus:border-primary transition-colors"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
                 />
-              </div>
+              </label>
+
+              {uploading && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-600 font-medium">Mengupload gambar...</p>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-4 pt-4">
@@ -302,7 +375,7 @@ export default function EditPortfolio({ params }: { params: Promise<{ id: string
                 {loading ? 'Menyimpan...' : 'Update Portfolio'}
               </button>
               <Link
-                href="/admin/dashboard"
+                href="/admin/portfolio"
                 className="px-6 py-3 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors text-center font-semibold text-primary flex items-center justify-center"
               >
                 Batal

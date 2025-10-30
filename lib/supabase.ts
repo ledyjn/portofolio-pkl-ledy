@@ -13,7 +13,8 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  image_url: string;
+  image_url: string; // Main thumbnail image
+  images?: string[]; // Multiple screenshots/images
   detail: string;
   technologies: string[];
   created_at: string;
@@ -23,6 +24,17 @@ export interface Project {
 
 // Backward compatibility alias
 export type Portfolio = Project;
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  level: number;
+  icon?: string;
+  url?: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface User {
   id: string;

@@ -6,7 +6,6 @@ import { ArrowDown } from 'lucide-react';
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-light">
-      {/* Content */}
       <div className="container mx-auto px-6 lg:px-12 relative z-10 py-20">
         <motion.div
           className="text-center max-w-5xl mx-auto"
@@ -14,7 +13,6 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -26,7 +24,6 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Ledy Jentri{' '}
             <span className="inline-block">
@@ -39,13 +36,11 @@ export default function Hero() {
             </span>
           </h1>
 
-          {/* Subtitle */}
           <p className="text-base md:text-lg text-accent-gray mb-8 max-w-2xl mx-auto leading-relaxed">
             Siswa XII RPL A yang menampilkan hasil pembelajaran selama{' '}
             <span className="font-semibold text-primary">4 bulan program PKL</span>
           </p>
 
-          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.a
               href="#portfolio"
@@ -70,7 +65,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         className="absolute bottom-8 left-0 right-0 flex items-center justify-center"
         animate={{ y: [0, 10, 0] }}

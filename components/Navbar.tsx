@@ -11,7 +11,6 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-light/80 backdrop-blur-md border-b border-gray-200">
       <div className="px-4 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <Link
             href="/"
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
@@ -27,7 +26,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-10">
             <Link href="/" className="text-primary hover:opacity-60 transition-opacity font-medium">
               Home
@@ -37,6 +35,12 @@ export default function Navbar() {
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
               About
+            </Link>
+            <Link
+              href="#internship"
+              className="text-primary hover:opacity-60 transition-opacity font-medium"
+            >
+              Tempat PKL
             </Link>
             <Link
               href="#portfolio"
@@ -71,7 +75,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -85,7 +88,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-light border-t border-gray-200">
           <div className="px-4 py-6 space-y-4">
@@ -102,6 +104,13 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               About
+            </Link>
+            <Link
+              href="#internship"
+              className="block py-2 hover:text-primary transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Tempat PKL
             </Link>
             <Link
               href="#portfolio"

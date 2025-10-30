@@ -48,15 +48,12 @@ export default function ContactSection() {
       return;
     }
 
-    // Create mailto link with pre-filled data
     const subject = `Portfolio Contact: ${formData.name}`;
     const body = `Nama: ${formData.name}%0D%0AEmail: ${formData.email}%0D%0A%0D%0APesan:%0D%0A${formData.message}`;
     const mailtoLink = `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
     
-    // Open email client
     window.location.href = mailtoLink;
     
-    // Show success message
     setSuccess(true);
     setFormData({ name: '', email: '', message: '' });
     
@@ -66,7 +63,6 @@ export default function ContactSection() {
   return (
     <section id="contact" className="py-24 px-6 lg:px-12 bg-light-darker">
       <div className="container mx-auto max-w-6xl">
-        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -86,7 +82,6 @@ export default function ContactSection() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -101,7 +96,6 @@ export default function ContactSection() {
               </p>
             </div>
 
-            {/* Contact Methods */}
             <div className="space-y-4">
               {profile?.email && (
                 <a 
@@ -136,7 +130,6 @@ export default function ContactSection() {
               )}
             </div>
 
-            {/* Social Media */}
             {(profile?.github || profile?.linkedin || profile?.instagram) && (
               <div>
                 <h4 className="font-semibold mb-4 text-primary">Ikuti Saya</h4>
@@ -176,7 +169,6 @@ export default function ContactSection() {
             )}
           </motion.div>
 
-          {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}

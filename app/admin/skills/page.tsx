@@ -12,6 +12,7 @@ interface Skill {
   category: string;
   level: number;
   icon: string;
+  url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -33,7 +34,8 @@ export default function SkillsAdmin() {
     name: '',
     category: '',
     level: 50,
-    icon: 'code'
+    icon: 'code',
+    url: ''
   });
 
   useEffect(() => {
@@ -87,6 +89,7 @@ export default function SkillsAdmin() {
             category: formData.category,
             level: formData.level,
             icon: formData.icon,
+            url: formData.url || null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', editingSkill.id);
@@ -105,7 +108,7 @@ export default function SkillsAdmin() {
 
       setShowModal(false);
       setEditingSkill(null);
-      setFormData({ name: '', category: '', level: 50, icon: 'code' });
+      setFormData({ name: '', category: '', level: 50, icon: 'code', url: '' });
       fetchSkills();
     } catch (error: any) {
       alert('Error: ' + error.message);
@@ -118,7 +121,8 @@ export default function SkillsAdmin() {
       name: skill.name,
       category: skill.category,
       level: skill.level,
-      icon: skill.icon
+      icon: skill.icon,
+      url: skill.url || ''
     });
     setShowModal(true);
   };
@@ -188,7 +192,7 @@ export default function SkillsAdmin() {
             <button
               onClick={() => {
                 setEditingSkill(null);
-                setFormData({ name: '', category: '', level: 50, icon: 'code' });
+                setFormData({ name: '', category: '', level: 50, icon: 'code', url: '' });
                 setShowModal(true);
               }}
               className="px-3 md:px-5 py-2.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors flex items-center space-x-2 font-semibold text-sm md:text-base"
@@ -253,18 +257,25 @@ export default function SkillsAdmin() {
                       {skill.name}
                     </h3>
 
-                    {/* Progress */}
+                    {/* URL Info */}
                     <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-accent-gray">Level</span>
-                        <span className="text-sm font-bold text-purple-600">{skill.level}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-full h-2.5 transition-all duration-500" 
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
-                      </div>
+                      {skill.url ? (
+                        <a 
+                          href={skill.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-2 px-3 py-2 bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-lg transition-colors group"
+                        >
+                          <Globe className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-medium text-primary truncate max-w-[200px]">
+                            {skill.url.replace(/^https?:\/\//, '')}
+                          </span>
+                        </a>
+                      ) : (
+                        <div className="text-xs text-accent-gray italic">
+                          URL belum diatur
+                        </div>
+                      )}
                     </div>
 
                     {/* Actions */}
@@ -326,16 +337,18 @@ export default function SkillsAdmin() {
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-primary">
-                  Level ({formData.level}%)
+                  URL Technology (Opsional)
                 </label>
                 <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={formData.level}
-                  onChange={(e) => setFormData({ ...formData, level: parseInt(e.target.value) })}
-                  className="w-full"
+                  type="url"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  placeholder="https://reactjs.org"
+                  className="w-full px-4 py-3 rounded-xl bg-light border-2 border-gray-200 focus:border-primary focus:outline-none"
                 />
+                <p className="text-xs text-accent-gray mt-1.5">
+                  URL akan bisa diklik di website untuk redirect ke halaman tech
+                </p>
               </div>
 
               <div>
@@ -361,7 +374,7 @@ export default function SkillsAdmin() {
                   onClick={() => {
                     setShowModal(false);
                     setEditingSkill(null);
-                    setFormData({ name: '', category: '', level: 50, icon: 'code' });
+                    setFormData({ name: '', category: '', level: 50, icon: 'code', url: '' });
                   }}
                   className="flex-1 px-6 py-3 bg-gray-200 rounded-full font-semibold hover:bg-gray-300 transition-colors"
                 >
