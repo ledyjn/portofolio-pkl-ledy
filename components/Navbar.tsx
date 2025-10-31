@@ -40,7 +40,7 @@ export default function Navbar() {
               href="#internship"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              Tempat PKL
+              Profile Iduka
             </Link>
             <Link
               href="#portfolio"
@@ -110,7 +110,7 @@ export default function Navbar() {
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Profile PKL
+              Profile Iduka
             </Link>
             <Link
               href="#portfolio"
