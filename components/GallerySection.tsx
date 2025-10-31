@@ -14,7 +14,7 @@ export default function GallerySection() {
     <section id="gallery" className="py-20 bg-light overflow-hidden">
       <div className="container mx-auto px-6 mb-12 text-center">
         <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-          Gallery
+          Galeri
         </span>
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
           Galeri <span className="text-primary">Dokumentasi</span>

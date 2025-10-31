@@ -28,19 +28,19 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center space-x-10">
             <Link href="/" className="text-primary hover:opacity-60 transition-opacity font-medium">
-              Home
+              Beranda
             </Link>
             <Link
               href="#about"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              About
+              Tentang
             </Link>
             <Link
               href="#internship"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              Profile Iduka
+              Profil Iduka
             </Link>
             <Link
               href="#portfolio"
@@ -52,19 +52,19 @@ export default function Navbar() {
               href="#skills"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              Skills
+              Keahlian
             </Link>
             <Link
               href="#gallery"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              Gallery
+              Galeri
             </Link>
             <Link
               href="#contact"
               className="text-primary hover:opacity-60 transition-opacity font-medium"
             >
-              Contact
+              Kontak
             </Link>
             <Link
               href="/admin/login"
@@ -96,21 +96,21 @@ export default function Navbar() {
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Home
+              Beranda
             </Link>
             <Link
               href="#about"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              About
+              Tentang
             </Link>
             <Link
               href="#internship"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Profile Iduka
+              Profil Iduka
             </Link>
             <Link
               href="#portfolio"
@@ -124,21 +124,21 @@ export default function Navbar() {
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Skills
+              Keahlian
             </Link>
             <Link
               href="#gallery"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Gallery
+              Galeri
             </Link>
             <Link
               href="#contact"
               className="block py-2 hover:text-primary transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Contact
+              Kontak
             </Link>
             <Link
               href="/admin/login"

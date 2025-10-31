@@ -16,7 +16,7 @@ export default function InternshipSection() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-            Profile PKL
+            Profil Iduka
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Pengenalan <span className="text-primary">Perusahaan</span>

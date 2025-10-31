@@ -20,7 +20,7 @@ export default function Hero() {
             className="inline-block"
           >
             <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-6">
-              ✨ XII RPL A • Portfolio Magang
+              XII RPL A • Portfolio Magang
             </span>
           </motion.div>
 
@@ -29,16 +29,26 @@ export default function Hero() {
             <span className="inline-block">
               <span className="relative">
                 Meiza
-                <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 200 12" fill="none">
-                  <path d="M2 10C50 2 150 2 198 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <svg
+                  className="absolute -bottom-1 left-0 w-full"
+                  height="8"
+                  viewBox="0 0 200 12"
+                  fill="none"
+                >
+                  <path
+                    d="M2 10C50 2 150 2 198 10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </span>
             </span>
           </h1>
 
           <p className="text-base md:text-lg text-accent-gray mb-8 max-w-2xl mx-auto leading-relaxed">
-            Siswa XII RPL A yang menampilkan hasil pembelajaran selama{' '}
-            <span className="font-semibold text-primary">4 bulan program PKL</span>
+            Laporan Praktik Kerja Lapangan ini disusun sebagai bentuk pertanggungjawaban kegiatan di
+            PT 3PM Solution.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -50,7 +60,12 @@ export default function Hero() {
             >
               <span>Lihat Projek</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </motion.a>
             <motion.a
@@ -71,7 +86,7 @@ export default function Hero() {
         transition={{ duration: 2, repeat: Infinity }}
       >
         <div className="flex flex-col items-center justify-center">
-          <span className="text-sm text-accent-gray mb-2">Scroll</span>
+          <span className="text-sm text-accent-gray mb-2">Gulir</span>
           <ArrowDown className="w-5 h-5 text-accent-gray" />
         </div>
       </motion.div>

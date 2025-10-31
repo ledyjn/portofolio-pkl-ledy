@@ -71,7 +71,7 @@ export default function ContactSection() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-            Get In Touch
+            Hubungi Saya
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Hubungi Saya
@@ -200,7 +200,7 @@ export default function ContactSection() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="email@example.com"
+                  placeholder="email@contoh.com"
                   required
                   className="w-full px-4 py-3 rounded-xl bg-light border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
                 />
@@ -223,7 +223,7 @@ export default function ContactSection() {
 
               {success && (
                 <div className="p-4 rounded-xl bg-blue-50 border-2 border-blue-200 text-blue-800 text-sm">
-                  ✓ Email client terbuka! Silakan klik Send di aplikasi email Anda.
+                  ✓ Klien email terbuka! Silakan klik Kirim di aplikasi email Anda.
                 </div>
               )}
 

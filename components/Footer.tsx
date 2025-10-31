@@ -43,16 +43,16 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Home
+                  Beranda
                 </Link>
               </li>
               <li>
                 <a href="#about" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  About
+                  Tentang
                 </a>
               </li>
               <li>
@@ -62,24 +62,24 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#skills" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Skills
+                  Keahlian
                 </a>
               </li>
               <li>
                 <a href="#contact" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Contact
+                  Kontak
                 </a>
               </li>
               <li>
                 <Link href="/admin/login" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Admin Login
+                  Login Admin
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Connect</h3>
+            <h3 className="text-lg font-semibold mb-4">Terhubung</h3>
             <div className="flex space-x-4">
               {profile?.github && (
                 <a 

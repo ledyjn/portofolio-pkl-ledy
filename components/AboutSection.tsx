@@ -62,7 +62,7 @@ export default function AboutSection() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-            About Me
+            Tentang Saya
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Tentang Saya

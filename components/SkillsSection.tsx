@@ -69,7 +69,7 @@ export default function SkillsSection() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
-            Skills
+            Keahlian
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Yang Saya Gunakan</h2>
           <p className="text-base text-accent-gray max-w-2xl mx-auto">
